@@ -1,0 +1,243 @@
+]<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <head>
+        <style>
+            #container {
+                width: 600px;
+                margin: 0 auto;
+                box-shadow: 0 0 25px rgb(182, 182, 183);
+                padding-bottom: 20px;
+                padding-top: 20px;
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 500px;
+                margin: 0 auto;
+            }
+
+            td,
+            th {
+                border: 1px solid rgb(215, 213, 213);
+                padding: 3px;
+                text-align: center;
+            }
+
+            th {
+                font-weight: bold;
+                color: red
+            }
+
+            .grd {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: 70px;
+                border-top: 2px solid red;
+                width: 550px;
+                margin: 0 auto;
+            }
+
+            .lft div {
+                position: relative;
+                border: 10px solid transparent;
+                border-right: 10px solid rgb(248, 84, 14);
+                top: 25px;
+                cursor: pointer;
+                left: -169px;
+            }
+
+            .rght div {
+                position: relative;
+                border: 10px solid transparent;
+                border-left: 10px solid rgb(237, 62, 23);
+                top: 25px;
+                cursor: pointer;
+                right: -169px;
+            }
+
+            .p1 {
+                text-transform: uppercase;
+                color: blue;
+                font-size: 26px;
+                font-weight: 900;
+                margin: 10px 0 0 0;
+                text-align: center;
+            }
+
+            .p2 {
+                text-align: center;
+                color: blue;
+                font-size: 16px;
+                font-weight: 900;
+                margin: 0;
+            }
+        </style>
+    </head>
+
+<body>
+    <div id="container">
+        <div class="grd">
+            <div class="lft">
+                <div></div>
+            </div>
+            <div>
+                <p class="p1">111</p>
+                <p class="p2">222</p>
+            </div>
+            <div class="rght">
+                <div></div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>пн</th>
+                    <th>вт</th>
+                    <th>ср</th>
+                    <th>чт</th>
+                    <th>пт</th>
+                    <th>сб</th>
+                    <th>вс</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+
+    <script>
+
+        let d1 = new Date()
+
+        const mounsText = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август',
+            'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+        let p1 = document.querySelector('.p1')
+        let p2 = document.querySelector('.p2')
+        let newD1 = d1.getMonth()
+        let newYear = d1.getFullYear()
+        let dateNow0 = d1.getDate();
+        p1.innerHTML = mounsText[newD1]
+        p2.innerHTML = newYear
+
+        function createCalendar(elem, year, month) {
+            let d = new Date(year, month)
+            // месяцы в JS идут от 0 до 11, а не от 1 до 12
+            let tble = '<tr>';
+            // пробелы для первого ряда
+            // с понедельника до первого дня месяца
+            // * * * 1  2  3  4
+            for (let i = 0; i < getDay(d); i++) {
+                tble += '<td></td>';
+            }
+            let mon = month;
+            // <td> ячейки календаря с датами
+            while (d.getMonth() == mon) {
+                tble += '<td>' + d.getDate() + '</td>';
+
+                if (getDay(d) % 7 == 6) { // вс, последний день - перевод строки
+                    tble += '</tr><tr>';
+                    console.log(getDay(d))
+                }
+
+                d.setDate(d.getDate() + 1);
+            }
+
+            // добить таблицу пустыми ячейками, если нужно
+            // 29 30 31 * * * *
+            if (getDay(d) != 0) {
+                for (let i = getDay(d); i < 7; i++) {
+                    tble += '<td></td>';
+                }
+            }
+
+            // закрыть таблицу
+
+            tble += '</tr>'
+            elem.innerHTML += tble;
+            dateNow()
+        }
+
+        function getDay(date) { // получить номер дня недели, от 0 (пн) до 6 (вс)
+            let day = date.getDay();
+            if (day == 0) day = 7; // сделать воскресенье (0) последним днем
+            return day - 1;
+        }
+        //let d2 = d1.getMonth()
+        //let d3 = d1.getFullYear();
+        // console.log(d2, d3);
+        function createCalendarNew(par) {
+            createCalendar(document.querySelector('tbody'), par.getFullYear(), par.getMonth());
+        }
+        createCalendarNew(d1)
+        document.querySelector('.lft').onclick = () => {
+            for (i = 0; i < mounsText.innerHTML; i++)
+                if (p1.innerHTML == mounsText[i])
+                    newD1 = i;
+            newYear = parseInt(p2.innerHTML);
+            console.log(newD1, newYear)
+            newD1--;
+            p1.innerHTML = mounsText[newD1]
+            p2.innerHTML = newYear
+            let d2 = new Date(newD1, newYear)
+            document.querySelector('tbody').innerHTML = ''
+            createCalendarNew(d2)
+            if (newD1 == -1) {
+                newD1 = 11
+                newYear--;
+                p1.innerHTML = mounsText[newD1]
+                p2.innerHTML = newYear;
+            }
+
+        }
+        document.querySelector('.rght').onclick = () => {
+            for (i = 0; i < mounsText.innerHTML; i++)
+                if (p1.innerHTML == mounsText[i])
+                    newD1 = i;
+            newYear = parseInt(p2.innerHTML);
+            console.log(newD1, newYear)
+            newD1++;
+            console.log(newD1, newYear)
+            p1.innerHTML = mounsText[newD1]
+            p2.innerHTML = newYear
+            let d2 = new Date(newD1, newYear)
+            document.querySelector('tbody').innerHTML = ''
+            createCalendarNew(d2)
+            if (newD1 == 12) {
+                newD1 = 0
+                newYear++;
+                p1.innerHTML = mounsText[newD1]
+                p2.innerHTML = newYear;
+            }
+
+        }
+        function dateNow() {
+            const tt = document.querySelectorAll('td');
+            console.log(tt)
+            if (p1.innerHTML == mounsText[d1.getMonth()] && p2.innerHTML == d1.getFullYear()) {
+                for (i = 0; i < document.querySelectorAll('td').length; i++) {
+
+                    if (tt[i].innerHTML == dateNow0) {
+                        tt[i].style.background = 'red'
+                        tt[i].style.color = 'white'
+                    }
+                }
+
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
